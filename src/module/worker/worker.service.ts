@@ -10,7 +10,13 @@ export class WorkerService {
   ) {}
 
   public async execute(): Promise<void> {
-    // const contents = await this.crawlerService.get();
-    await this.thecampService.login();
+    try {
+      const contents = await this.crawlerService.get();
+      const cookie = await this.thecampService.login();
+      await this.thecampService.send(cookie, contents);
+    } catch (err) {
+      console.error(err);
+      throw new Error(err);
+    }
   }
 }
