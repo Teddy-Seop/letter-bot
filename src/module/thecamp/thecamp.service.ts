@@ -6,21 +6,26 @@ import fetch, { RequestInit } from 'node-fetch';
 export class ThecampService {
   constructor(private readonly configService: ConfigService) {}
 
-  public async login(): Promise<void> {
-    const url = 'https://www.thecamp.or.kr/login/loginA.do';
-    const options: RequestInit = {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      method: 'POST',
+  public async login(): Promise<string> {
+    try {
+      const url = 'https://www.thecamp.or.kr/login/loginA.do';
+      const options: RequestInit = {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        method: 'POST',
 
-      body: new URLSearchParams({
-        userId: this.configService.get<string>('user.email'),
-        userPwd: this.configService.get<string>('user.password'),
-      }),
-    };
+        body: new URLSearchParams({
+          userId: this.configService.get<string>('user.email'),
+          userPwd: this.configService.get<string>('user.password'),
+        }),
+      };
 
-    const res = await fetch(url, options);
-    const result = await res.json();
+      const { headers } = await fetch(url, options);
+      return headers.get('set-cookie');
+    } catch (err) {
+      console.error(err);
+      throw new Error(err);
+    }
   }
 }
