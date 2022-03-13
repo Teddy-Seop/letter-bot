@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 
 import { ScheduleModule } from '@nestjs/schedule';
-import { WorkerModule } from '@module/worker';
+// import { WorkerModule } from '@module/worker';
 import { SchedulerService } from './scheduler.service';
 
 @Module({
-  imports: [ScheduleModule.forRoot(), WorkerModule],
+  imports: [ScheduleModule.forRoot()],
   exports: [SchedulerService],
   providers: [SchedulerService],
 })

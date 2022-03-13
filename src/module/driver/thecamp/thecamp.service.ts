@@ -2,12 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import fetch, { RequestInit } from 'node-fetch';
 
+import { DriverServiceAbstract } from '../driver.service.abstract';
 import { IThecampGroup } from './interface';
 import { IContents } from '@module/crawler/type';
 
 @Injectable()
-export class ThecampService {
-  constructor(private readonly configService: ConfigService) {}
+export class ThecampDriverService extends DriverServiceAbstract<string, void> {
+  constructor(protected readonly configService: ConfigService) {
+    super(configService);
+  }
 
   public async login(): Promise<string> {
     const url = 'https://www.thecamp.or.kr/login/loginA.do';
