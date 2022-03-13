@@ -1,10 +1,10 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Post } from '@nestjs/common';
 
 import { ControllerAbstract } from '@controller/controller.abstract';
 import { CrawlerService } from '@module/crawler';
 import { ThecampWorkerService } from '@module/worker/thecamp';
 
-@Controller()
+@Controller('thecamp')
 export class ThecampController extends ControllerAbstract<string, void> {
   constructor(
     protected readonly crawlerService: CrawlerService,
@@ -13,7 +13,8 @@ export class ThecampController extends ControllerAbstract<string, void> {
     super(crawlerService, workerService);
   }
 
+  @Post()
   public async send(): Promise<void> {
-    await this.workerService.execute();
+    return this.workerService.execute();
   }
 }

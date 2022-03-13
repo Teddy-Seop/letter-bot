@@ -49,6 +49,6 @@ export class CrawlerService {
 
       contentsArray.push(contents);
     }
-    return contentsArray;
+    return contentsArray.filter(({ body }) => !!body);
   }
 }
