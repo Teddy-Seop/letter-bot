@@ -48,11 +48,17 @@ export class ThecampDriverService extends DriverServiceAbstract<
         const data = {
           boardDiv: 'sympathyLetter',
           tempSaveYn: 'N',
-          traineeMgrSeq: '1574638',
           sympathyLetterContent: contents[i],
           sympathyLetterSubject: `인편 봇 ${new Date()} ${i}`,
-          trainUnitCd: '20020192300',
-          trainUnitEduSeq: '14096',
+          traineeMgrSeq: this.configService.get<string>(
+            'thecamp.soldier.traineeMgrSeq',
+          ),
+          trainUnitCd: this.configService.get<string>(
+            'thecamp.soldier.trainUnitCd',
+          ),
+          trainUnitEduSeq: this.configService.get<string>(
+            'thecamp.soldier.trainUnitEduSeq',
+          ),
         };
 
         const body = new URLSearchParams(data).toString();
