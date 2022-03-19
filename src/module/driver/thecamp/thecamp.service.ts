@@ -3,16 +3,18 @@ import { ConfigService } from '@nestjs/config';
 import fetch, { RequestInit } from 'node-fetch';
 
 import { DriverServiceAbstract } from '../driver.service.abstract';
-import { IThecampGroup } from './interface';
-import { IContents } from '@module/crawler/type';
+import { IThecampCookie } from './interface';
 
 @Injectable()
-export class ThecampDriverService extends DriverServiceAbstract<string, void> {
+export class ThecampDriverService extends DriverServiceAbstract<
+  IThecampCookie,
+  void
+> {
   constructor(protected readonly configService: ConfigService) {
     super(configService);
   }
 
-  public async login(): Promise<string> {
+  public async login(): Promise<IThecampCookie> {
     const url = 'https://www.thecamp.or.kr/login/loginA.do';
     const options: RequestInit = {
       headers: {
@@ -27,11 +29,48 @@ export class ThecampDriverService extends DriverServiceAbstract<string, void> {
     };
 
     const { headers } = await fetch(url, options);
-    return headers.get('set-cookie');
+
+    const cookies = headers.get('set-cookie');
+
+    const iuid = cookies.split(/\iuid=\s*([\w.\[\]]+)\s*;/g)[1];
+    const token = cookies.split(/\Token=\s*([\w.\[\]\%]+)\s*;/g)[1];
+
+    return {
+      iuid,
+      token,
+    };
   }
 
-  public async send(cookie: string, contents: IContents[]): Promise<void> {
-    const url = 'https://www.thecamp.or.kr/pcws/message/letter/insert.do';
-    const group = this.configService.get<IThecampGroup>('group');
+  public async send(cookie: IThecampCookie, contents: string[]): Promise<void> {
+    const url = 'https://www.thecamp.or.kr/consolLetter/insertConsolLetterA.do';
+    try {
+      for (let i = 0; i < contents.length; i++) {
+        const data = {
+          boardDiv: 'sympathyLetter',
+          tempSaveYn: 'N',
+          traineeMgrSeq: '1574638',
+          sympathyLetterContent: contents[i],
+          sympathyLetterSubject: `인편 봇 ${new Date()} ${i}`,
+          trainUnitCd: '20020192300',
+          trainUnitEduSeq: '14096',
+        };
+
+        const body = new URLSearchParams(data).toString();
+        const options: RequestInit = {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+            Cookie: `iuid=${cookie.iuid}; Token=${cookie.token}`,
+          },
+          body,
+        };
+
+        const response = await fetch(url, options);
+
+        console.log(response.statusText, await response.text());
+      }
+    } catch (error) {
+      console.error(error);
+    }
   }
 }

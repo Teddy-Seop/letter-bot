@@ -12,7 +12,7 @@ export class ParserService {
       const contents = `${title}\n\n${body}\n\n${divider}`;
       const replacedContents = `${lastContents}${contents}`;
 
-      if (replacedContents.length < 1400) {
+      if (replacedContents.length < 1300) {
         parsedContents.splice(parsedContents.length - 1, 1, replacedContents);
       } else {
         parsedContents.push(contents.slice(0, 1400));

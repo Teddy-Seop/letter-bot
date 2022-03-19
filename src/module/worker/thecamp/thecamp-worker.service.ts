@@ -3,9 +3,13 @@ import { CrawlerService } from '@module/crawler';
 import { WorkerServiceAbstract } from '../worker.service.abstract';
 import { ThecampDriverService } from '@module/driver/thecamp';
 import { ParserService } from '@module/parser';
+import { IThecampCookie } from '@module/driver/thecamp/interface';
 
 @Injectable()
-export class ThecampWorkerService extends WorkerServiceAbstract<string, void> {
+export class ThecampWorkerService extends WorkerServiceAbstract<
+  IThecampCookie,
+  void
+> {
   constructor(
     protected readonly crawlerService: CrawlerService,
     protected readonly parserService: ParserService,
@@ -19,7 +23,7 @@ export class ThecampWorkerService extends WorkerServiceAbstract<string, void> {
       const contents = await this.crawlerService.get();
       const parsedContents = this.parserService.parse(contents);
       const cookie = await this.thecampDriverService.login();
-      await this.thecampDriverService.send(cookie, contents);
+      await this.thecampDriverService.send(cookie, parsedContents);
     } catch (err) {
       console.error(err);
       throw new Error(err);

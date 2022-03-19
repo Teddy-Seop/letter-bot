@@ -1,1 +1,1 @@
-export * from './thecamp-group.interface';
+export * from './thecamp.interface';

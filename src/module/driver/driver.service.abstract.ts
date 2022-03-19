@@ -9,7 +9,7 @@ export abstract class DriverServiceAbstract<
 
   public abstract login(): Promise<DriverLoginResponseType>;
   public abstract send(
-    authentication: string,
-    contents: IContents[],
+    authentication: DriverLoginResponseType,
+    contents: string[],
   ): Promise<DriverSendResponseType>;
 }
