@@ -9,10 +9,10 @@ export class ParserService {
 
     contents.forEach(({ title, body }) => {
       const lastContents = parsedContents[parsedContents.length - 1];
-      const contents = `${title}\n\n${body}\n\n${divider}`;
+      const contents = `<b>${title}</b><br/><br/>${body}<br/><br/>${divider}`;
       const replacedContents = `${lastContents}${contents}`;
 
-      if (replacedContents.length < 1300) {
+      if (replacedContents.length < 1400) {
         parsedContents.splice(parsedContents.length - 1, 1, replacedContents);
       } else {
         parsedContents.push(contents.slice(0, 1400));
